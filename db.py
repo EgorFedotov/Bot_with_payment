@@ -15,7 +15,7 @@ class Database:
     def add_user(self, user_id):
         """Создание пользователя в БД."""
         with self.connection:
-            self.cursor.execute("INSERT INTO `users` (`user_id`) VALUES (?)", (user_id,))
+            return self.cursor.execute("INSERT INTO `users` (`user_id`) VALUES (?)", (user_id,))
 
     def user_money(self, user_id):
         """Баланс пользователя."""
@@ -26,4 +26,22 @@ class Database:
     def set_money(self, user_id, money):
         """Изменение баланса пользователя."""
         with self.connection:
-            return self.cursor.execute("UPDATE `users` SET `money` = ? WHERE `user_id` = ?", (money, user_id))
+            return self.cursor.execute("UPDATE `users` SET `money` = ? WHERE `user_id` = ?", (money, user_id,))
+
+    def add_check(self, user_id, money, bill_id):
+        """Создание запроса"""
+        with self.connection:
+            self.cursor.execute("INSERT INTO `users` (`user_id`, `money`, `bill_id`) VALUES (?,?,?)", (user_id, money, bill_id,))
+
+    def get_check(self, bill_id):
+        """Получение оплаты."""
+        with self.connection:
+            result = self.cursor.execute("SELECT * FROM `check` WHERE `bill_id` = ?", (bill_id,)).fetchmany(1)
+            if not bool(len(result)):
+                return False
+            return result[0]
+
+    def delete_check(self, bill_id):
+        """"Удаление счета"""
+        with self.connection:
+            return self.cursor.execute("DELETE FROM `check` WHERE `bill_id` = ?", (bill_id,))
