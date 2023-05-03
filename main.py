@@ -1,10 +1,11 @@
 import os
 
 from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyqiwip2p import QiwiP2P
 from dotenv import load_dotenv
 
 from db import Database
+from markups import ikb
 
 
 load_dotenv()
@@ -21,11 +22,7 @@ bot = Bot(TOKEN_API)
 dispather = Dispatcher(bot)
 
 db = Database("database.db")
-
-ikb = InlineKeyboardMarkup(row_width=2)
-ikbPay = InlineKeyboardButton(text='Пополнить баланс',
-                              url='https://github.com/EgorFedotov')
-ikb.add(ikbPay)
+p2p = QiwiP2P(auth_key=os.getenv('QIVI_TOKEN'))
 
 
 async def on_startup(_):
@@ -40,6 +37,16 @@ async def start_command(message: types.Message):
     await message.answer(text='Я - бот для пополнения баланса. Нажмите на кнопку, чтобы пополнить баланс',
                          reply_markup=ikb)
     await message.delete()
+
+
+@dispather.callback_query_handler(text='top_up')
+async def top_up(callback: types.CallbackQuery):
+    await bot.delete_message(callback.from_user.id, callback.message.message_id)
+    await bot.send_message(callback.from_user.id, 'Введите сумму, на которую вы хотите пополнить баланс')
+
+
+@dispather.message_handler()
+async def bot_mess(message: types.Message):
 
 
 @dispather.message_handler(commands=['help'])
