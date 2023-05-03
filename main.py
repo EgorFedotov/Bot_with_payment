@@ -1,7 +1,13 @@
-from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+import os
 
-TOKEN_API = '6230487116:AAGCKUko_CJOSPSLzDVBibxaMz99WyMV0s4'
+from aiogram import Bot, Dispatcher, executor, types
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+TOKEN_API = os.getenv('TOKEN_API')
 HELP_COMMAND = """
 <b>/help</b> - <em>показывает список команд</em>
 <b>/Start</b> - <em>запускает бота</em>
@@ -11,9 +17,10 @@ HELP_COMMAND = """
 bot = Bot(TOKEN_API)
 dispather = Dispatcher(bot)
 
-kb = ReplyKeyboardMarkup(resize_keyboard=True,
-                         one_time_keyboard=True)
-kb.add(KeyboardButton(text='Пополнить баланс'))
+ikb = InlineKeyboardMarkup(row_width=2)
+ikbPay = InlineKeyboardButton(text='Пополнить баланс',
+                              url='https://github.com/EgorFedotov')
+ikb.add(ikbPay)
 
 
 async def on_startup(_):
@@ -24,7 +31,7 @@ async def on_startup(_):
 async def start_command(message: types.Message):
     await message.answer(text=f'Привет, {message.from_user.username}')
     await message.answer(text='Я - бот для пополнения баланса. Нажмите на кнопку, чтобы пополнить баланс',
-                         reply_markup=kb)
+                         reply_markup=ikb)
     await message.delete()
 
 
