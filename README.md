@@ -4,7 +4,7 @@
 ***
 
 ## Стек
-Python3, aiogram, pyQiwiP2P
+Python3, aiogram, pyQiwiP2P, sqlite3
 ***
 
 ## Инструкция по запуску
