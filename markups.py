@@ -1,16 +1,13 @@
-from aiogram.types import (InlineKeyboardButton,
-                           InlineKeyboardMarkup,
-                           KeyboardButton,
-                           ReplyKeyboardMarkup)
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-kb = ReplyKeyboardMarkup(resize_keyboard=True)
-balancekb = KeyboardButton(text='Баланс')
-kb.add(balancekb)
 
 ikb = InlineKeyboardMarkup(row_width=1)
 ikbPay = InlineKeyboardButton(text='Пополнить баланс',
                               callback_data='top_up')
-ikb.add(ikbPay)
+balancekb = InlineKeyboardButton(text='Баланс',
+                                 callback_data='balance')
+
+ikb.add(ikbPay, balancekb)
 
 
 def buy_meny(isUrl=True, url='', bill=''):

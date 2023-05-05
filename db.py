@@ -29,7 +29,7 @@ class Database:
             return self.cursor.execute("UPDATE `users` SET `money` = ? WHERE `user_id` = ?", (money, user_id,))
 
     def add_check(self, user_id, money, bill_id):
-        """Создание запроса"""
+        """Создание счета."""
         with self.connection:
             self.cursor.execute("INSERT INTO `users` (`user_id`, `money`, `bill_id`) VALUES (?,?,?)", (user_id, money, bill_id,))
 
@@ -42,6 +42,6 @@ class Database:
             return result[0]
 
     def delete_check(self, bill_id):
-        """"Удаление счета"""
+        """"Удаление счета."""
         with self.connection:
             return self.cursor.execute("DELETE FROM `check` WHERE `bill_id` = ?", (bill_id,))
