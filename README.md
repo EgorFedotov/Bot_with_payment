@@ -39,7 +39,7 @@ Python3, aiogram, pyQiwiP2P, sqlite3
     - токен qiwi 
 
 
-* запускаем сервер 
+* запускаем бота
 
     `
 	python main.py
