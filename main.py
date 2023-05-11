@@ -85,12 +85,15 @@ async def check(callback: types.CallbackQuery):
             money = int(info[2])
             db.set_money(callback.from_user.id, user_money+money)
             await bot.send_message(callback.from_user.id, 'Ваш баланс пополнен')
+            logger.info(f'Пользователь {callback.from_user.full_name} пополнил баланс')
         else:
             await bot.send_message(callback.from_user.id,
                                    'Вы не оплатили счет!',
                                    reply_markup=buy_meny(False, bill=bill))
+            logger.info(f'Пользователь {callback.from_user.full_name} не оплатил счет')
     else:
         await bot.send_message(callback.from_user.id, 'Счет не найден')
+        logger.error(f'счет для пользователя {callback.from_user.full_name} не найден')
 
 
 @dispather.message_handler(commands=['help'])
