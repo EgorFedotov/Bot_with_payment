@@ -11,7 +11,9 @@ def add_logger(name):
     )
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
-    handler = RotatingFileHandler('my_logger.log', maxBytes=50000000, backupCount=5)
+    handler = RotatingFileHandler('my_logger.log',
+                                  maxBytes=50000000,
+                                  backupCount=5)
     logger.addHandler(handler)
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

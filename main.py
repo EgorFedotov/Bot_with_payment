@@ -4,7 +4,7 @@ import random
 import aiogram
 from aiogram import Bot, Dispatcher, executor, types
 from pyqiwip2p import QiwiP2P
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 from db import Database
 from markups import ikb, buy_meny
@@ -12,7 +12,13 @@ from logger import add_logger
 
 
 logger = add_logger(__name__)
-load_dotenv()
+
+if not find_dotenv():
+    logger.critical('Переменные окружения не загружены т.к отсутствует файл .env')
+    exit()
+
+else:
+    load_dotenv()
 
 
 TOKEN_API = os.getenv('TOKEN_API')
@@ -48,25 +54,25 @@ async def on_startup(_):
 async def start_command(message: types.Message):
     if not db.user_exists(message.from_user.id):
         db.add_user(message.from_user.id)
-    try:
-        await message.answer(text=f'Привет, {message.from_user.username}')
-        await message.answer(text='Я - бот для пополнения баланса. Нажмите на кнопку, чтобы пополнить баланс',
-                             reply_markup=ikb)
-        await message.delete()
-    except aiogram.exceptions.MessageError as error:
-        logger.error(f'сообщения приветствия не отправленны {error}')
+    await message.answer(text=f'Привет, {message.from_user.username}')
+    await message.answer(text='Я - бот для пополнения баланса. Нажмите на кнопку, чтобы пополнить баланс',
+                         reply_markup=ikb)
+    await message.delete()
+    logger.info(f'Пользователь {message.from_user.full_name} запустил бота')
 
 
 @dispather.callback_query_handler(text='top_up')
 async def top_up(callback: types.CallbackQuery):
     await bot.delete_message(callback.from_user.id, callback.message.message_id)
     await bot.send_message(callback.from_user.id, 'Введите сумму, на которую вы хотите пополнить баланс')
+    logger.info(f'Пользователь {callback.from_user.full_name} нажал на кнопку "пополнить баланс"')
 
 
 @dispather.callback_query_handler(text='balance')
 async def get_balance(callback: types.CallbackQuery):
     await bot.delete_message(callback.from_user.id, callback.message.message_id)
     await bot.send_message(callback.from_user.id, f'ваш баланс {db.user_money(callback.message.from_user.id)}')
+    logger.info(f'Пользователь {callback.from_user.full_name} нажал на кнопку "баланс"')
 
 
 @dispather.callback_query_handler(text_contains='check_')
