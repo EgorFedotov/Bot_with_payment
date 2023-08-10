@@ -1,7 +1,6 @@
 import os
 import random
 
-import aiogram
 from aiogram import Bot, Dispatcher, executor, types
 from pyqiwip2p import QiwiP2P
 from dotenv import load_dotenv, find_dotenv
