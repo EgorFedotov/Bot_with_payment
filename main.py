@@ -26,7 +26,7 @@ bot = Bot(TOKEN_API)
 dispather = Dispatcher(bot)
 
 db = Database("database.db")
-# p2p = QiwiP2P(auth_key=os.getenv('QIVI_TOKEN'))
+p2p = QiwiP2P(auth_key=os.getenv('QIVI_TOKEN'))
 
 
 def is_number(_str):
@@ -73,7 +73,7 @@ async def get_balance(callback: types.CallbackQuery):
 async def check(callback: types.CallbackQuery):
     bill = str(callback.data[6:])
     info = db.get_check(bill)
-    if info != False:
+    if info is not False:
         if str(p2p.check(bill_id=bill).status) == 'PAID':
             user_money = db.user_money(callback.from_user.id)
             money = int(info[2])
